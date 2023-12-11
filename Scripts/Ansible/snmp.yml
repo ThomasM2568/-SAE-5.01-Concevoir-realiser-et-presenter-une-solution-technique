@@ -1,0 +1,16 @@
+---
+- name: Configure SNMP on Debian Systems
+  hosts: debian_servers
+  become: true
+
+  tasks:
+    - name: Install SNMP daemon
+      apt:
+        name: snmpd
+        state: present
+
+    - name: Ensure SNMP service is enabled and running
+      systemd:
+        name: snmpd
+        state: started
+        enabled: yes
