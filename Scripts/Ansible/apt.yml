@@ -1,0 +1,22 @@
+---
+- name: Execute Commands
+  hosts: debian
+  become: yes
+  gather_facts: no
+  #connection: local
+  vars:
+    ansible_connection: network_cli
+    ansible_network_os: vyos  # Replace with your actual network OS
+  vars_files:
+    - credentials.yml
+  tasks:
+    - name: Execute multiple commands
+      shell: |
+        apt update
+        apt upgrade
+      register: command_result
+
+    - name: Display command results
+      debug:
+        var: command_result.stdout_lines
+
