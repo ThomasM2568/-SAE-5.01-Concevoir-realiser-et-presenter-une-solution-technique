@@ -9,6 +9,7 @@ cp host.ini host.ori.ini
 vi host.ini
 ```
 
+# host.ini
 ```bash
 [debian_servers]
 debian1 ansible_host=IP1
