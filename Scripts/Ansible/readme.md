@@ -12,7 +12,7 @@ pip install ansible
 ansible-playbook -i host.ini linux_maj_sys.yml
 ```
 
-# Modify before using
+## Modify before using
 ```bash
 cp host.ini host.ori.ini
 vi host.ini
