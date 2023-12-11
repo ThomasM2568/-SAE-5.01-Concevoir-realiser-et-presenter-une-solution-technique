@@ -1,0 +1,15 @@
+---
+- name: Update Debian Systems
+  hosts: debian_servers
+  become: true  # Run tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        name: "*"
+        state: latest
+        upgrade: yes
