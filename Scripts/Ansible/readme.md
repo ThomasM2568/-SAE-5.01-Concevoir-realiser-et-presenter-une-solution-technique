@@ -10,6 +10,9 @@ pip install ansible
 # How to use
 ```bash
 ansible-playbook -i host.ini linux_maj_sys.yml
+ansible-playbook -i host.ini tftp.yml
+ansible-playbook -i host.ini snmp.yml
+
 ```
 
 ## Modify before using
