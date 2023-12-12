@@ -1,30 +1,29 @@
-# Install ANSIBLE
+# Install ANSIBLE et SSH
 ```bash
 
 sudo apt update
+sudo apt upgrade
 sudo apt install ansible
 
-pip install ansible
+pip install ansible ansible-pylibssh
+
+sudo apt install ssh sshpass openssh-server
 ```
 
-# How to use
+# Preparation de la clé SSH
 ```bash
-ansible-playbook -i host.ini linux_maj_sys.yml
-ansible-playbook -i host.ini tftp.yml
-ansible-playbook -i host.ini snmp.yml
-
+ssh-keygen -t rsa -b 2048
+#Presser Entrée puis entrer 2 fois sa passphrase
 ```
 
-## Modify before using
+## Créer les fichiers yml et ini disponibles plus haut
 ```bash
-cp host.ini host.ori.ini
-vi host.ini
+sudo nano Update_upgrade_apt.yml
+sudo nano inventaire.ini
+sudo nano credentials.yml
 ```
 
-### host.ini
+### Executer la commande 
 ```bash
-[debian_servers]
-debian1 ansible_host=IP1
-debian2 ansible_host=IP2
-debian3 ansible_host=IP3
+ansible-playbook -i inventaire.ini Update_upgrade_apt.yml
 ```
