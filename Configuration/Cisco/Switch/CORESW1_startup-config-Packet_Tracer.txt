@@ -2,10 +2,12 @@
 version 16.3.2
 no service timestamps log datetime msec
 no service timestamps debug datetime msec
-no service password-encryption
+service password-encryption
 !
-hostname Switch
+hostname CORESW1
 !
+!
+enable secret 5 $1$mERr$kiGzU4Kf6Zb9e78XybbFa0
 !
 !
 !
@@ -17,6 +19,7 @@ no ipv6 cef
 !
 !
 !
+username CORESW1 secret 5 $1$mERr$kiGzU4Kf6Zb9e78XybbFa0
 !
 !
 !
@@ -26,6 +29,10 @@ no ipv6 cef
 !
 !
 !
+!
+ip ssh version 2
+ip ssh time-out 60
+ip domain-name wsl2024.org
 !
 !
 port-channel load-balance src-dst-mac
@@ -37,10 +44,12 @@ spanning-tree mode pvst
 !
 !
 interface Port-channel1
- switchport trunk allowed vlan 10,20,30,90,300
+ switchport trunk allowed vlan 10,20,30,99,300
  switchport mode trunk
 !
 interface GigabitEthernet1/0/1
+ switchport trunk allowed vlan 30,100,300
+ switchport mode trunk
 !
 interface GigabitEthernet1/0/2
  switchport trunk allowed vlan 10,20,30,99
@@ -89,12 +98,12 @@ interface GigabitEthernet1/0/21
 interface GigabitEthernet1/0/22
 !
 interface GigabitEthernet1/0/23
- switchport trunk allowed vlan 10,20,30,90,300
+ switchport trunk allowed vlan 10,20,30,99,300
  switchport mode trunk
  channel-group 1 mode active
 !
 interface GigabitEthernet1/0/24
- switchport trunk allowed vlan 10,20,30,90,300
+ switchport trunk allowed vlan 10,20,30,99,300
  switchport mode trunk
  channel-group 1 mode active
 !
@@ -109,12 +118,42 @@ interface GigabitEthernet1/1/4
 interface Vlan1
  no ip address
 !
+interface Vlan10
+ mac-address 0060.5c9b.c301
+ ip address 10.1.10.60 255.255.255.192
+ standby 10 ip 10.1.10.62
+ standby 10 priority 110
+ standby 10 preempt
+!
+interface Vlan20
+ mac-address 0060.5c9b.c302
+ ip address 10.1.21.252 255.255.254.0
+ standby 20 ip 10.1.21.254
+ standby 20 priority 110
+ standby 20 preempt
+!
+interface Vlan30
+ mac-address 0060.5c9b.c303
+ no ip address
+!
+interface Vlan99
+ mac-address 0060.5c9b.c304
+ ip address 10.1.99.12 255.255.255.240
+ standby 99 ip 10.1.99.14
+ standby 99 priority 110
+ standby 99 preempt
+!
+interface Vlan100
+ mac-address 0060.5c9b.c305
+ ip address 10.1.254.246 255.255.255.252
+!
 ip classless
 !
 ip flow-export version 9
 !
 !
 !
+banner motd C /!\ Restricted access. Only for authorized people /!\ C
 !
 !
 !
@@ -124,7 +163,8 @@ line con 0
 line aux 0
 !
 line vty 0 4
- login
+ login local
+ transport input ssh
 !
 !
 !
