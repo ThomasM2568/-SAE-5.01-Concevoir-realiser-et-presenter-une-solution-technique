@@ -6,7 +6,7 @@
   gather_facts: False
   connection: network_cli
   vars_files:
-    - ROUTER_credentials.yml
+    - credentials.yml
   vars:
     version: "IOS"
 
