@@ -1,0 +1,66 @@
+
+---
+- name: Update SNMP and Radius key
+  hosts: all
+  any_errors_fatal: True
+  gather_facts: False
+  connection: network_cli
+  vars_files:
+    - ROUTER_credentials.yml
+  vars:
+    version: "IOS"
+
+  tasks:
+#    - name: Collect facts {{inventory_hostname}}
+#      set_fact:
+#        objects: "{{ lookup('ciscopsa_objects','{{ansible_host}}',username=ansible_user,password=ansible_ssh_pass) }}"
+#        version: "IOS"
+
+    - name: Collect version
+      ios_command:
+        commands: "show version"
+      register: show_version
+
+    - name: IOS XE ?
+      set_fact:
+        version: "IOS-XE"
+      when: "show_version.stdout_lines is search('IOS-XE')"
+
+    - name: IOS XR ?
+      set_fact:
+        version: "IOS-XR"
+      when: "show_version.stdout_lines is search('IOS XR')"
+
+    - name: Update the community on {{inventory_hostname}} (IOS-XR)
+      iosxr_config:
+        lines:
+          - "snmp-server community name RO IPv4 id"
+          - "snmp-server community name RW IPv4 id"
+          - "snmp-server community public aa IPv4 id1"
+          - "snmp-server community bb RW IPv4 id2"
+          - "snmp-server host ip traps public"
+          - "snmp-server host ip traps public"
+          - "snmp-server host ip traps nom"
+        match: exact
+      notify: configure
+      when: version == "IOS-XR"
+
+    - name: Update the community on {{inventory_hostname}} (IOS & IOS-XE)
+      ios_config:
+        lines:
+          - "snmp-server community name RO IPv4 id"
+          - "snmp-server community name RW IPv4 id"
+          - "snmp-server community public aa IPv4 id1"
+          - "snmp-server community bb RW IPv4 id2"
+          - "snmp-server host ip traps public"
+          - "snmp-server host ip traps public"
+          - "snmp-server host ip traps nom"
+        match: exact
+      notify: configure
+      when: version != "IOS-XR"
+
+    - name: save running to startup when modified {{inventory_hostname}}
+      ios_config:
+        save_when: modified
+      when: version != "IOS-XR"
+
