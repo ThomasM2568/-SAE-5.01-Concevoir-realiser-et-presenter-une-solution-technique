@@ -1,0 +1,20 @@
+- name: Récupérer la configuration FTP du switch Cisco
+  hosts: all
+  any_errors_fatal: True
+  gather_facts: False
+    connection: network_cli
+  vars_files:
+    - credentials.yml
+  vars:
+    version: "IOS"
+  tasks:
+    - name: Récupérer la configuration FTP
+      ios_command:
+        commands: 
+          - show running-config | include ftp
+      register: ftp_config
+
+    - name: Sauvegarder la configuration dans un fichier
+      copy:
+        content: "{{ ftp_config.stdout[0] }}"
+        dest: "./configs/config_ftp_{{ inventory_hostname }}.txt"

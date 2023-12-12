@@ -1,0 +1,13 @@
+- name: Déployer la configuration FTP sur le switch Cisco
+  hosts: all
+  any_errors_fatal: True
+  gather_facts: False
+    connection: network_cli
+  vars_files:
+    - credentials.yml
+  vars:
+    version: "IOS"
+  tasks:
+    - name: Appliquer la configuration FTP depuis un fichier
+      ios_config:
+        src: "./configs/config_ftp_{{ inventory_hostname }}.txt"
