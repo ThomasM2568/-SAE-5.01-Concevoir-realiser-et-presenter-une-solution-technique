@@ -1,1 +1,159 @@
+EDGE2#sh run
+Building configuration...
+
+Current configuration : 2229 bytes
+!
+upgrade fpd auto
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname EDGE2
+!
+boot-start-marker
+boot-end-marker
+!
+logging message-counter syslog
+!
+no aaa new-model
+ip source-route
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+ip vrf INET
+!         
+ip vrf MAN
+!
+!
+!
+no ip domain lookup
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+archive
+ log config
+  hidekeys
+! 
+!
+!
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+interface Loopback0
+ ip address 191.15.157.34 255.255.255.240
+!
+interface FastEthernet0/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface FastEthernet1/0
+ no ip address
+  shutdown
+ duplex half
+!
+interface FastEthernet2/0
+ description WANRTR VRF MAN
+ ip vrf forwarding MAN
+ ip address 10.1.254.249 255.255.255.252
+ duplex half
+!
+interface FastEthernet3/0
+ description WANRTR VRF INET
+ ip vrf forwarding INET
+ ip address 31.1.126.14 255.255.255.252
+ duplex half
+!
+interface FastEthernet4/0
+ no ip address
+ duplex half
+!
+interface FastEthernet4/0.30
+ encapsulation dot1Q 30
+!         
+interface FastEthernet4/0.200
+ encapsulation dot1Q 200
+ ip address 10.1.254.241 255.255.255.252
+!
+interface FastEthernet4/0.300
+ encapsulation dot1Q 300
+ ip address 217.1.160.5 255.255.255.248
+ standby 255 ip 217.1.160.6
+ standby 255 preempt
+!
+router ospf 1 vrf MAN
+ router-id 0.0.0.2
+ log-adjacency-changes
+ redistribute connected
+ redistribute static
+ redistribute bgp 65116 subnets
+ network 10.1.254.248 0.0.0.3 area 0
+ network 217.1.160.0 0.0.0.7 area 0
+ !
+ router bgp 65116
+ no synchronization
+ bgp log-neighbor-changes
+ network 31.1.126.12 mask 255.255.255.252
+ network 217.1.160.0 mask 255.255.255.248
+ redistribute connected
+ redistribute static
+ neighbor 31.1.126.13 remote-as 65130
+ neighbor 217.1.160.4 remote-as 65116
+ no auto-summary
+!
+ip forward-protocol nd
+ip route 10.1.0.0 255.255.0.0 10.1.254.242
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+!
+!
+!
+control-plane
+!         
+!
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+!         
+end
+
 
