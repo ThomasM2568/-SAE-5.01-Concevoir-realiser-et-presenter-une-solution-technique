@@ -3,15 +3,23 @@
 
 
 $TTL 604800 ;Permet de maintenir le Time to live de notre zone a 604800 secondes, pendant 1 semaine, 
-@	IN	SOA	ns.worldskills.org. (
+@	IN	SOA	ns.worldskills.org. admin.worldskills.org. (
 			2		;Serie
 			604800		;TTL / Tmps de refresh data
 			86400		;Retry
 			2419200 	;Expire
-			604800 )	;Negative cache TTL
-;
+			604800		;Negative cache TTL
 
+)
 
-@				IN	NS	ns.worldskills.org.
-inetsrv.worldskills.org		IN	A	8.8.1.1
-ftp				IN	CNAME	inetsrv.worldskills.org.
+;Liste des Nameservers pour la zone
+				IN	NS	ns.worldskills.org.
+ns				IN	A	8.8.1.3
+
+;Liste des Types A
+inetsrv				IN	A	8.8.1.1
+wanrtr				IN	A	8.8.1.6
+
+;Liste des types CNAME
+www				IN	CNAME	inetsrv.worldskills.org
+ftp				IN	CNAME	inetsrv.worldskills.org
