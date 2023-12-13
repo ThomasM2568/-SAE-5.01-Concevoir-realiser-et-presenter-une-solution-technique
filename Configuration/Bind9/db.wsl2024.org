@@ -1,0 +1,17 @@
+;Fichier config zone wsl2024.org
+;Tout ce qui suit un point virgule est un commentaire
+
+
+$TTL 604800 ;Permet de maintenir le Time to live de notre zone a 604800 secondes, pendant 1 semaine, 
+@	IN	SOA	ns.wsl2024.org. (
+			2		;Serie
+			604800		;TTL / Tmps de refresh data
+			86400		;Retry
+			2419200 	;Expire
+			604800 )	;Negative cache TTL
+;
+
+
+@				IN	NS	ns.wsl2024.org.
+inetsrv.worldskills.org		IN	A	8.8.1.1
+ftp				IN	CNAME	inetsrv.worldskills.org.
