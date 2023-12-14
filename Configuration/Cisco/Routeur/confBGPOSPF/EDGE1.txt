@@ -1,0 +1,169 @@
+hostname EDGE2
+!
+boot-start-marker
+boot-end-marker
+!
+logging message-counter syslog
+!
+no aaa new-model
+ip source-route
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+ip vrf INET
+ rd 2:2   
+ route-target export 2:2
+ route-target import 2:2
+!
+ip vrf MAN
+!
+!
+!
+no ip domain lookup
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+archive
+ log config
+  hidekeys
+! 
+!
+!
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+interface Loopback0
+ ip address 191.15.157.34 255.255.255.240
+!
+interface FastEthernet0/0
+ no ip address
+ duplex half
+!
+interface FastEthernet0/0.15
+ description WANRTR VRF MAN
+ encapsulation dot1Q 15
+ ip vrf forwarding MAN
+ ip address 10.1.254.249 255.255.255.252
+!
+interface FastEthernet0/0.16
+ description WANRTR VRF INET
+ encapsulation dot1Q 16
+ ip vrf forwarding INET
+ ip address 31.1.126.14 255.255.255.252
+!
+interface FastEthernet1/0
+ no ip address
+ duplex half
+!
+interface FastEthernet1/0.30
+ encapsulation dot1Q 30
+!
+interface FastEthernet1/0.200
+ encapsulation dot1Q 200
+ ip address 10.1.254.241 255.255.255.252
+!
+interface FastEthernet1/0.300
+ encapsulation dot1Q 300
+ ip address 217.1.160.5 255.255.255.248
+ standby 255 ip 217.1.160.6
+ standby 255 preempt
+!
+interface FastEthernet2/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface FastEthernet3/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface FastEthernet4/0
+ no ip address
+ shutdown
+ duplex half
+!
+router ospf 1 vrf MAN
+ router-id 0.0.0.2
+ log-adjacency-changes
+ redistribute bgp 65116 subnets
+ network 10.1.254.248 0.0.0.3 area 1
+!
+router bgp 65116
+ no synchronization
+ bgp router-id 31.1.126.14
+ bgp log-neighbor-changes
+ no auto-summary
+ !
+ address-family ipv4 vrf INET
+  redistribute connected
+  redistribute static
+  neighbor 31.1.126.13 remote-as 65130
+  neighbor 31.1.126.13 activate
+  neighbor 217.1.160.4 remote-as 65116
+  neighbor 217.1.160.4 activate
+  no synchronization
+  network 31.1.126.12 mask 255.255.255.252
+  network 217.1.160.0 mask 255.255.255.248
+ exit-address-family
+!         
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown 
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+!
+end

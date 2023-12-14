@@ -1,0 +1,153 @@
+ip vrf INET
+ rd 3:3   
+ route-target export 3:3
+ route-target import 3:3
+!
+ip vrf MAN
+!
+!
+!
+no ip domain lookup
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+archive
+ log config
+  hidekeys
+! 
+!
+!
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+interface FastEthernet0/0
+ no ip address
+ duplex half
+!
+interface FastEthernet0/0.13
+ description EDGE1 VRF MAN
+ encapsulation dot1Q 13
+ ip vrf forwarding MAN
+ ip address 10.1.254.254 255.255.255.252
+!
+interface FastEthernet0/0.14
+ description EDGE1 VRF INET
+ encapsulation dot1Q 14
+ ip vrf forwarding INET
+ ip address 91.1.222.97 255.255.255.252
+!
+interface FastEthernet1/0
+ no ip address
+ duplex half
+!
+interface FastEthernet1/0.15
+ description EDGE2 VRF MAN
+ encapsulation dot1Q 15
+ ip vrf forwarding MAN
+ ip address 10.1.254.250 255.255.255.252
+!
+interface FastEthernet1/0.16
+ description EDGE2 VRF INET
+ encapsulation dot1Q 16
+ ip vrf forwarding INET
+ ip address 31.1.126.13 255.255.255.252
+!
+interface FastEthernet2/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface FastEthernet3/0
+ no ip address
+ shutdown
+ duplex half
+!
+interface FastEthernet4/0
+ no ip address
+ shutdown
+ duplex half
+!
+router ospf 1 vrf MAN
+ router-id 0.0.0.3
+ log-adjacency-changes
+ redistribute bgp 65130 subnets
+ network 10.1.254.248 0.0.0.3 area 1
+ network 10.1.254.252 0.0.0.3 area 1
+!
+router bgp 65130
+ no synchronization
+ bgp router-id 91.1.222.97
+ bgp log-neighbor-changes
+ no auto-summary
+ !
+ address-family ipv4 vrf INET
+  redistribute connected
+  redistribute static
+  neighbor 31.1.126.14 remote-as 65116
+  neighbor 31.1.126.14 activate
+  neighbor 91.1.222.98 remote-as 65116
+  neighbor 91.1.222.98 activate
+  no synchronization
+  network 31.1.126.12 mask 255.255.255.252
+  network 91.1.222.96 mask 255.255.255.252
+ exit-address-family
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+!
+no cdp log mismatch duplex
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+!
+end
