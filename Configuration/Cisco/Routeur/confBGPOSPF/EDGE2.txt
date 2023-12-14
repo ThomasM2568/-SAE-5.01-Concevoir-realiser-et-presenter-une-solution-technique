@@ -70,7 +70,7 @@ interface FastEthernet0/0.16
  description WANRTR VRF INET
  encapsulation dot1Q 16
  ip vrf forwarding INET
- ip address 31.1.126.14 255.255.255.252
+ ip address 91.1.222.98 255.255.255.252
 !
 interface FastEthernet1/0
  no ip address
