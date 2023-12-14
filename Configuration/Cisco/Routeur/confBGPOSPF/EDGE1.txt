@@ -12,9 +12,9 @@ ip cef
 !
 !
 ip vrf INET
- rd 2:2   
- route-target export 2:2
- route-target import 2:2
+ rd 1:1  
+ route-target export 1:1
+ route-target import 1:1
 !
 ip vrf MAN
 !
