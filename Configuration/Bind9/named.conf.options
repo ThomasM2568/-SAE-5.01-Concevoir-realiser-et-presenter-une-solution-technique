@@ -1,11 +1,13 @@
 //Config bind custom, la config par défaut est dans /root/save/bind/named.conf.options
 options {
 	directory "/var/cache/bind";
-	listen-on { 127.0.0.1; 8.8.1.3; }; //ecouter les requettes sur la loopback et l'interface internet
-	allow-query { 127.0.0.1; 8.8.1.3; };
+	listen-on { 8.8.1.3; }; //ecouter les requettes sur la loopback et l'interface internet
+	allow-query { any; };
 	recursion no; //permet de faire des recherches de notre DNS vers d'autres DNS, A DESACTIVER SI LE DNS EST SUR INTERNET
-	//dnssec-validation yes; //active le dnssec, on desactive pour l'instant
 	dnssec-validation no;
+	//dnssec-enable yes;
+	//dnssec-validation yes; //active le dnssec, on desactive pour l'instant
+	//dnssec-lookaside auto;
 	querylog yes;
 };
 
