@@ -57,27 +57,8 @@ ip tcp synwait-time 5
 !
 !
 !
-interface FastEthernet0/0
- no ip address
- shutdown
- duplex half
-!
-interface FastEthernet1/0
-no ip address
- shutdown
- duplex half
-!
+
 interface FastEthernet2/0
- no ip address
- shutdown 
- duplex half
-!
-interface FastEthernet3/0
- no ip address
- shutdown
- duplex half
-!
-interface FastEthernet4/0
  ip address 10.116.1.2 255.255.255.252
  duplex half
 !
