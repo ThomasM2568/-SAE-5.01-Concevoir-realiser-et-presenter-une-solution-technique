@@ -1,0 +1,19 @@
+- name: SNMP Configuration
+  hosts: all
+  any_errors_fatal: True
+  gather_facts: False
+    connection: network_cli
+  vars_files:
+    - credentials.yml
+  vars:
+    version: "IOS"
+  tasks:
+    - name: Execution de la commande
+      ios_command:
+        commands:
+          - snmp-server community 4P rw
+      register: command_output
+
+    - name: Afficher le resultat
+          debug:
+            var: command_output.stdout_lines
