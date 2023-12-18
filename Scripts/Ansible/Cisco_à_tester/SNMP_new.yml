@@ -1,0 +1,22 @@
+- name: SNMP Configuration
+  hosts: cisco_routers
+  any_errors_fatal: True
+  gather_facts: False
+    connection: network_cli
+  vars:
+    version: "IOS"
+  tasks:
+    - name: Execution de la commande
+      ios_command:
+        commands:
+          - snmp-server community 4P rw
+      register: command_output
+
+    - name: Afficher le resultat
+          debug:
+            var: command_output.stdout_lines
+
+    - name: wr
+      ios_command:
+        commands:
+          - write memory
