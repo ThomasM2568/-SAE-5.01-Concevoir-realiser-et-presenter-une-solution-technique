@@ -1,0 +1,217 @@
+!
+! Last configuration change at 13:04:19 UTC Mon Dec 18 2023
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname EDGE2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$iMYp$TRE2/7V1qCIfEEGzA0d2q0
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip domain name wsl2024.org
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+voice-card 0
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid CISCO2901/K9 sn FCZ18336130
+license accept end user agreement
+license boot module c2900 technology-package securityk9
+license boot module c2900 technology-package uck9
+license boot module c2900 technology-package datak9
+!
+!
+username EDGE2 secret 5 $1$Taau$UbNj.zEPg/xlqK/Soe8v6/
+username ansible privilege 15 secret 5 $1$zIgP$qr6ewy5WQWECCHUFlITEN/
+!
+redundancy
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 191.15.157.34 255.255.255.240
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.15
+ description WANRTR VRF MAN
+ encapsulation dot1Q 15
+ ip address 10.1.254.249 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/0.16
+ description WANRTR VRF INET
+ encapsulation dot1Q 16
+ ip address 31.1.126.14 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.30
+ encapsulation dot1Q 30
+!
+interface GigabitEthernet0/1.200
+ encapsulation dot1Q 200
+ ip address 10.1.254.241 255.255.255.252
+!
+interface GigabitEthernet0/1.300
+ encapsulation dot1Q 300
+ ip address 217.1.160.5 255.255.255.248
+ standby 255 ip 217.1.160.6
+ standby 255 preempt
+!
+!
+router ospf 1
+ router-id 0.0.0.2
+ redistribute connected subnets
+ redistribute static subnets
+ redistribute bgp 65116 subnets
+ network 10.1.254.240 0.0.0.3 area 1
+ network 10.1.254.248 0.0.0.3 area 1
+!
+router bgp 65116
+ bgp router-id 31.1.126.14
+ bgp log-neighbor-changes
+ neighbor 31.1.126.13 remote-as 65130
+ neighbor 217.1.160.4 remote-as 65116
+ !
+ address-family ipv4
+  bgp redistribute-internal
+  network 31.1.126.12 mask 255.255.255.252
+  network 217.1.160.0 mask 255.255.255.248
+  redistribute connected
+  redistribute static
+  neighbor 31.1.126.13 activate
+  neighbor 217.1.160.4 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip nat inside source list NAT-ACL interface GigabitEthernet0/0.15 overload
+ip route 0.0.0.0 0.0.0.0 31.1.126.13 140
+ip ssh time-out 20
+ip ssh version 2
+!
+ip access-list extended NAT-ACL
+ permit ip 10.1.0.0 0.0.255.255 any
+!
+!
+!
+snmp-server community 4P RW
+!
+control-plane
+!
+ !
+ !
+ !
+ !
+!
+mgcp behavior rsip-range tgcp-only
+mgcp behavior comedia-role none
+mgcp behavior comedia-check-media-src disable
+mgcp behavior comedia-sdp-force disable
+!
+mgcp profile default
+!
+!
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+ vstack
+banner motd ^CC /!\ Restricted access. Only for authorized people /!\ ^C
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ exec-timeout 5 0
+ absolute-timeout 20
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+!
+end
