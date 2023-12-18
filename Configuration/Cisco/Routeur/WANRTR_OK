@@ -1,0 +1,177 @@
+!
+! Last configuration change at 13:43:47 UTC Mon Dec 18 2023
+! NVRAM config last updated at 13:43:48 UTC Mon Dec 18 2023
+! NVRAM config last updated at 13:43:48 UTC Mon Dec 18 2023
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname WANRTR
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$z7YL$zHDvY/F/pXLQoeD7dU5pO.
+!
+no aaa new-model
+!
+!
+no ipv6 cef
+ip source-route
+ip cef
+!
+!
+!
+ip vrf INET
+ rd 3:3
+ route-target export 3:3
+ route-target import 3:3
+!
+ip vrf MAN
+!
+!
+!
+ip domain name wsl2024.org
+!
+multilink bundle-name authenticated
+!
+crypto pki token default removal timeout 0
+!
+!
+license udi pid CISCO1941/K9 sn FCZ1637C38G
+license accept end user agreement
+license boot module c1900 technology-package securityk9
+license boot module c1900 technology-package datak9
+!
+!
+username WANRTR secret 5 $1$oBPD$8Xfc4PCi1.ibs1SxXX8Rs/
+username ansible privilege 15 secret 5 $1$uUx0$VonZxXBLpf/PV5E8tXUQE1
+!
+redundancy
+!
+!
+!
+!
+ip ssh time-out 20
+ip ssh version 2
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.15
+ description EDGE2 VRF MAN
+ encapsulation dot1Q 15
+ ip vrf forwarding MAN
+ ip address 10.1.254.250 255.255.255.252
+!
+interface GigabitEthernet0/0.16
+ description EDGE2 VRF INET
+ encapsulation dot1Q 16
+ ip vrf forwarding INET
+ ip address 31.1.126.13 255.255.255.252
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.13
+ description EDGE1 VRF MAN
+ encapsulation dot1Q 13
+ ip vrf forwarding MAN
+ ip address 10.1.254.254 255.255.255.252
+!
+interface GigabitEthernet0/1.14
+ description EDGE1 VRF INET
+ encapsulation dot1Q 14
+ ip vrf forwarding INET
+ ip address 91.1.222.97 255.255.255.252
+!
+interface FastEthernet0/0/0
+ ip vrf forwarding MAN
+ ip address 10.116.1.1 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1/0
+ ip vrf forwarding INET
+ ip address 8.8.1.6 255.255.255.248
+ duplex auto
+ speed auto
+!
+router ospf 1 vrf MAN
+ router-id 0.0.0.3
+ redistribute bgp 65130 subnets
+ network 10.1.254.248 0.0.0.3 area 1
+ network 10.1.254.252 0.0.0.3 area 1
+ network 10.116.1.0 0.0.0.3 area 1
+!
+router ospf 2 vrf INET
+ redistribute bgp 65130 subnets
+ network 8.8.1.0 0.0.0.7 area 1
+!
+router bgp 65130
+ bgp router-id 91.1.222.97
+ bgp log-neighbor-changes
+ !
+ address-family ipv4 vrf INET
+  network 31.1.126.12 mask 255.255.255.252
+  network 91.1.222.96 mask 255.255.255.252
+  redistribute connected
+  redistribute static
+  neighbor 31.1.126.14 remote-as 65116
+  neighbor 31.1.126.14 activate
+  neighbor 91.1.222.98 remote-as 65116
+  neighbor 91.1.222.98 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+snmp-server community 4P RW
+!
+control-plane
+!
+!
+banner motd ^C /!\ Restricted access. Only for authorized people /!\ ^C
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport input all
+ transport output lat pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ exec-timeout 5 0
+ absolute-timeout 20
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+end
+
