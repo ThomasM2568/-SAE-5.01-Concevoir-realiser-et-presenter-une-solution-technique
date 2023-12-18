@@ -17,3 +17,8 @@
     - name: Afficher le resultat
           debug:
             var: command_output.stdout_lines
+
+    - name: wr
+      ios_command:
+        commands:
+          - write memory
