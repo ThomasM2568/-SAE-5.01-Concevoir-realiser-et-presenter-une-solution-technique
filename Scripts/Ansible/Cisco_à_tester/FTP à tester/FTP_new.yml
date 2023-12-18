@@ -1,10 +1,8 @@
 - name: SNMP Configuration
-  hosts: all
+  hosts: cisco_routers
   any_errors_fatal: True
   gather_facts: False
     connection: network_cli
-  vars_files:
-    - credentials.yml
   vars:
     version: "IOS"
   tasks:
