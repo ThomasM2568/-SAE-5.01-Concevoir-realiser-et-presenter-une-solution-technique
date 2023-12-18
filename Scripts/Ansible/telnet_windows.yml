@@ -1,0 +1,9 @@
+---
+- name: Install Telnet client on Windows servers
+  hosts: windows_servers
+  gather_facts: no
+  tasks:
+    - name: Install Telnet client feature
+      win_feature:
+        name: Telnet-Client
+        state: present
