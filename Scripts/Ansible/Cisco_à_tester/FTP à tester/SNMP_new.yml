@@ -9,7 +9,7 @@
     - name: Execution de la commande
       ios_command:
         commands:
-          - snmp-server community 4P rw
+          - snmp-server community 4P_test rw
       register: command_output
 
     - name: Afficher le resultat
