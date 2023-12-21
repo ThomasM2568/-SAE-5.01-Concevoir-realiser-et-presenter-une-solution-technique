@@ -1,0 +1,175 @@
+!
+! Last configuration change at 15:27:26 UTC Wed Dec 20 2023
+! NVRAM config last updated at 15:12:18 UTC Wed Dec 20 2023
+! NVRAM config last updated at 15:12:18 UTC Wed Dec 20 2023
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname EDGE1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 4 g1rTD89b38NIXbGJse.zLc7Cega1TBTlKQNvYDh9Qo6
+!
+no aaa new-model
+!
+!
+no ipv6 cef
+ip source-route
+ip cef
+!
+!
+!
+!
+!
+ip domain name wsl2024.org
+!
+multilink bundle-name authenticated
+!
+!
+crypto pki token default removal timeout 0
+!
+!
+license udi pid CISCO2901/K9 sn FGL17031108
+!
+!
+username EDGE1 secret 4 g1rTD89b38NIXbGJse.zLc7Cega1TBTlKQNvYDh9Qo6
+username ansible privilege 15 secret 4 PKLhL5I.4O4NlVcnud60yr7w/S7LJUwsw/HagJ6CICo
+!
+redundancy
+!
+!
+!
+!
+ip ssh time-out 20
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 191.15.157.33 255.255.255.240
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.13
+ description WANRTR VRF MAN
+ encapsulation dot1Q 13
+ ip address 10.1.254.253 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/0.14
+ description WANRTR VRF INET
+ encapsulation dot1Q 14
+ ip address 91.1.222.98 255.255.255.252
+ ip nat outside
+ no ip virtual-reassembly in
+ ip virtual-reassembly out
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.30
+ encapsulation dot1Q 30
+ ip address 217.1.160.4 255.255.255.248
+ standby 255 ip 217.1.160.6
+ standby 255 priority 110
+ standby 255 preempt
+!
+interface GigabitEthernet0/1.100
+ encapsulation dot1Q 100
+ ip address 10.1.254.245 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/1.300
+ encapsulation dot1Q 300
+!
+router ospf 1
+ router-id 0.0.0.1
+ redistribute connected
+ redistribute static
+ redistribute bgp 65116
+ network 10.1.254.244 0.0.0.3 area 1
+ network 10.1.254.252 0.0.0.3 area 1
+!
+router bgp 65116
+ bgp router-id 91.1.126.98
+ bgp log-neighbor-changes
+ neighbor 91.1.222.97 remote-as 65130
+ neighbor 217.1.160.5 remote-as 65116
+ !
+ address-family ipv4
+  bgp redistribute-internal
+  network 91.1.222.96 mask 255.255.255.252
+  network 217.1.160.0 mask 255.255.255.248
+  redistribute connected
+  redistribute static
+  redistribute ospf 1
+  neighbor 91.1.222.97 activate
+  neighbor 217.1.160.5 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip nat inside source list NAT-ACL interface GigabitEthernet0/0.14 overload
+ip route 0.0.0.0 0.0.0.0 91.1.222.97 140
+ip route 10.1.0.0 255.255.0.0 10.1.254.246 120
+!
+ip access-list extended NAT-ACL
+ permit ip any any
+!
+!
+!
+!
+!
+route-map PREPEND-AS permit 10
+ set as-path prepend 65116 65116
+!
+route-map SWITCH-VRF permit 10
+ match ip address SWITCH-ACL
+!
+!
+snmp-server community 4P RW
+!
+control-plane
+!
+!
+banner motd ^CC /!\ Restricted access. Only for authorized people /!\ ^C
+!
+line con 0
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport input all
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ exec-timeout 5 0
+ absolute-timeout 20
+ login local
+ transport input ssh
+!
+scheduler allocate 20000 1000
+end
