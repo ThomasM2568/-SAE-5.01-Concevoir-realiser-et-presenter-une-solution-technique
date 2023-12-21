@@ -1,0 +1,38 @@
+- name: Récupérer et transférer la configuration Cisco
+  hosts: all
+  gather_facts: False
+  connection: network_cli
+  vars_files:
+    - credentials.yml
+
+  tasks:
+      - name: Configurer la communauté SNMP '4P' en lecture/écriture
+      ios_config:
+        lines:
+          - snmp-server community 4P rw
+
+    - name: Récupérer la configuration complète
+      ios_command:
+        commands:
+          - show running-config
+      register: running_config
+
+    - name: Créer un fichier avec la configuration
+      copy:
+        content: "{{ running_config.stdout[0] }}"
+        dest: "/tmp/config_{{ inventory_hostname }}.txt"
+
+    - name: Transférer le fichier vers le serveur FTP
+      ansible.builtin.command:
+        cmd: |
+          ftp -n 8.8.1.12 <<EOF
+          user devops
+          put /tmp/config_{{ item }}.txt
+          quit
+          EOF
+      delegate_to: localhost
+      loop: "{{ ansible_play_hosts }}"
+      loop_control:
+        loop_var: item
+
+
