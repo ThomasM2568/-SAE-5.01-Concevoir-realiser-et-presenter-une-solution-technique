@@ -1,0 +1,218 @@
+!
+! Last configuration change at 01:08:20 UTC Tue Apr 5 2011
+! NVRAM config last updated at 09:12:45 UTC Tue Apr 5 2011
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname ACCSW1
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 4 g1rTD89b38NIXbGJse.zLc7Cega1TBTlKQNvYDh9Qo6
+!
+username ACCSW1 secret 4 g1rTD89b38NIXbGJse.zLc7Cega1TBTlKQNvYDh9Qo6
+username ansible privilege 15 secret 4 PKLhL5I.4O4NlVcnud60yr7w/S7LJUwsw/HagJ6CICo
+no aaa new-model
+switch 3 provision ws-c2960s-48fpd-l
+!
+!
+ip domain-name wsl2024.org
+!
+!
+crypto pki trustpoint TP-self-signed-3237003776
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3237003776
+ revocation-check none
+ rsakeypair TP-self-signed-3237003776
+!
+!
+crypto pki certificate chain TP-self-signed-3237003776
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 33323337 30303337 3736301E 170D3131 30333330 30313239
+  35395A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 32333730
+  30333737 3630819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281
+  8100BB7A BDF96946 4633259B 6532FE35 E5F69CAA 4442C340 B55AE8C3 B78C59C7
+  246C5CC8 BC636DFC DCB8B8A6 337BF7D1 B5907B64 F1E1A27C 64CA433D B11AEADD
+  4F00E49B 691612F0 50E921CB 8F517E8B ED6A5A02 C45E2E3F 6ACC2CAF CE2C4A53
+  1AC379F2 A664FDF2 27CA13FD F42D2840 3C38050B A7489596 083DA696 44AA768A
+  C9870203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603
+  551D2304 18301680 149D5BEA 5D70B505 FCCFDDCA DD0D6C57 C9BB6923 A8301D06
+  03551D0E 04160414 9D5BEA5D 70B505FC CFDDCADD 0D6C57C9 BB6923A8 300D0609
+  2A864886 F70D0101 05050003 81810080 F5CBC8BE CBE7EC67 4A9D092C 81926EC1
+  67E1268D 925138A8 B23B166B A5B9AF21 F8DD9926 24EDC073 8C55429D 8E7C4136
+  EC102632 C8788CD6 A82ABA74 75910D19 F28499E6 99D19870 D028D997 1D8B54C1
+  E9C06B41 23B83C54 C8C10EAB BFA2DF67 477336C6 B8BEC7D6 1F91E19B 0B7C2E8E
+  0AA27F00 F0991285 39D53007 88DD82
+        quit
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+!
+!
+!
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+ip ssh time-out 20
+ip ssh version 2
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0
+ no ip address
+!
+interface GigabitEthernet3/0/1
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,99
+ switchport mode trunk
+!
+interface GigabitEthernet3/0/2
+!
+interface GigabitEthernet3/0/3
+!
+interface GigabitEthernet3/0/4
+!
+interface GigabitEthernet3/0/5
+!
+interface GigabitEthernet3/0/6
+!
+interface GigabitEthernet3/0/7
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+!
+interface GigabitEthernet3/0/8
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+!
+interface GigabitEthernet3/0/9
+!
+interface GigabitEthernet3/0/10
+!
+interface GigabitEthernet3/0/11
+!
+interface GigabitEthernet3/0/12
+!
+interface GigabitEthernet3/0/13
+!
+interface GigabitEthernet3/0/14
+!
+interface GigabitEthernet3/0/15
+!
+interface GigabitEthernet3/0/16
+!
+interface GigabitEthernet3/0/17
+!
+interface GigabitEthernet3/0/18
+!
+interface GigabitEthernet3/0/19
+!
+interface GigabitEthernet3/0/20
+!
+interface GigabitEthernet3/0/21
+!
+interface GigabitEthernet3/0/22
+!
+interface GigabitEthernet3/0/23
+!
+interface GigabitEthernet3/0/24
+!
+interface GigabitEthernet3/0/25
+!
+interface GigabitEthernet3/0/26
+!
+interface GigabitEthernet3/0/27
+!
+interface GigabitEthernet3/0/28
+!
+interface GigabitEthernet3/0/29
+!
+interface GigabitEthernet3/0/30
+!
+interface GigabitEthernet3/0/31
+!
+interface GigabitEthernet3/0/32
+!
+interface GigabitEthernet3/0/33
+!
+interface GigabitEthernet3/0/34
+!
+interface GigabitEthernet3/0/35
+!
+interface GigabitEthernet3/0/36
+!
+interface GigabitEthernet3/0/37
+!
+interface GigabitEthernet3/0/38
+!
+interface GigabitEthernet3/0/39
+!
+interface GigabitEthernet3/0/40
+!
+interface GigabitEthernet3/0/41
+!
+interface GigabitEthernet3/0/42
+!
+interface GigabitEthernet3/0/43
+!
+interface GigabitEthernet3/0/44
+!
+interface GigabitEthernet3/0/45
+!
+interface GigabitEthernet3/0/46
+!
+interface GigabitEthernet3/0/47
+!
+interface GigabitEthernet3/0/48
+!
+interface GigabitEthernet3/0/49
+!
+interface GigabitEthernet3/0/50
+!
+interface TenGigabitEthernet3/0/1
+!
+interface TenGigabitEthernet3/0/2
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan99
+ ip address 10.1.99.2 255.255.255.240
+!
+ip http server
+ip http secure-server
+!
+!
+snmp-server community 4P RW
+!
+banner motd ^C/!\Restricted access. Only for authorized people/!\^C
+!
+line con 0
+line vty 0 4
+ exec-timeout 5 0
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+end
