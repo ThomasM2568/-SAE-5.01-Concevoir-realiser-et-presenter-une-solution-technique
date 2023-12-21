@@ -1,0 +1,183 @@
+!
+! Last configuration change at 15:28:44 UTC Wed Dec 20 2023
+! NVRAM config last updated at 15:28:49 UTC Wed Dec 20 2023
+!
+version 15.1
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname EDGE2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable password P@ssw0rd
+!
+no aaa new-model
+!
+no ipv6 cef
+ip source-route
+ip cef
+!
+!
+!
+!
+!
+ip domain name wsl2024.org
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+crypto pki token default removal timeout 0
+!
+!
+voice-card 0
+!
+!
+!
+!
+!
+!
+!
+license udi pid CISCO2901/K9 sn FCZ1837C1MQ
+license accept end user agreement
+hw-module pvdm 0/0
+!
+!
+!
+!
+redundancy
+!
+!
+controller VDSL 0/0/0
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 191.15.157.34 255.255.255.240
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.15
+ description EDGE2 VRF MAN
+ encapsulation dot1Q 15
+ ip address 10.1.254.249 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/0.16
+ description EDGE2 VRF INET
+ encapsulation dot1Q 16
+ ip address 31.1.126.14 255.255.255.252
+ ip nat outside
+ no ip virtual-reassembly in
+ ip virtual-reassembly out
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.30
+ encapsulation dot1Q 30
+ ip address 217.1.160.5 255.255.255.248
+ standby 255 ip 217.1.160.6
+ standby 255 preempt
+!
+interface GigabitEthernet0/1.200
+ encapsulation dot1Q 200
+ ip address 10.1.254.241 255.255.255.252
+ ip nat inside
+ ip virtual-reassembly in
+!
+interface GigabitEthernet0/1.300
+ encapsulation dot1Q 300
+!
+interface ATM0/0/0
+ no ip address
+ shutdown
+ no atm ilmi-keepalive
+!
+interface Ethernet0/0/0
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 0.0.0.2
+ redistribute connected subnets
+ redistribute static subnets
+ network 10.1.254.240 0.0.0.3 area 1
+ network 10.1.254.248 0.0.0.3 area 1
+!
+router bgp 65116
+ bgp router-id 31.1.126.14
+ bgp log-neighbor-changes
+ neighbor 31.1.126.13 remote-as 65130
+ neighbor 217.1.160.4 remote-as 65116
+ !
+ address-family ipv4
+  bgp redistribute-internal
+  network 31.1.126.12 mask 255.255.255.252
+  network 217.1.160.0 mask 255.255.255.248
+  redistribute connected
+  redistribute static
+  redistribute ospf 1
+  neighbor 31.1.126.13 activate
+  neighbor 217.1.160.4 activate
+  no auto-summary
+ exit-address-family
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 31.1.126.13 140
+ip route 10.1.0.0 255.255.0.0 10.1.254.242 120
+!
+!
+!
+snmp-server community 4P RW
+!
+control-plane
+!
+!
+voice-port 0/1/0
+!
+voice-port 0/1/1
+!
+voice-port 0/2/0
+!
+voice-port 0/2/1
+!
+!
+!
+mgcp profile default
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input all
+!
+scheduler allocate 20000 1000
+end
+
