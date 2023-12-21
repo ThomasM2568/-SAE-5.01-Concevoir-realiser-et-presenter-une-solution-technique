@@ -1,0 +1,203 @@
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname CORESW1
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$ZF63$o9vQ77Zump2wzCXBWsSmj1
+!
+username ansible privilege 15 secret 5 $1$hsbH$hz8u7ayOnermpu.VL9HXi/
+!
+!
+no aaa new-model
+switch 1 provision ws-c3750v2-24ts
+system mtu routing 1500
+ip routing
+ip domain-name wsl2024.org
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-209899264
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-209899264
+ revocation-check none
+ rsakeypair TP-self-signed-209899264
+!
+!
+crypto pki certificate chain TP-self-signed-209899264
+ certificate self-signed 01
+  30820249 308201B2 A0030201 02020101 300D0609 2A864886 F70D0101 04050030
+  30312E30 2C060355 04031325 494F532D 53656C66 2D536967 6E65642D 43657274
+  69666963 6174652D 32303938 39393236 34301E17 0D393330 33303130 30303134
+  335A170D 32303031 30313030 30303030 5A303031 2E302C06 03550403 1325494F
+  532D5365 6C662D53 69676E65 642D4365 72746966 69636174 652D3230 39383939
+  32363430 819F300D 06092A86 4886F70D 01010105 0003818D 00308189 02818100
+  B490EB4E 7CEA7998 831E449C 8E62E9FC 632E3CD3 C46A7DC3 0845058C D3E53714
+  9722E645 6EF9806F E526C0D6 2688E46F E0E731A1 531981FA AA0C257E 1C5B4536
+  3770925A 26B15774 43B921CF C3BE6840 0A6CA73F 7C3AC0F8 4E0DFF86 595DBFDC
+  E1209CA2 894EAA70 EB480A6D FBF3C98C 0A8A4BD5 4F736FDB 29B0C6A1 8CDACF83
+  02030100 01A37330 71300F06 03551D13 0101FF04 05300301 01FF301E 0603551D
+  11041730 15821343 4F524553 57312E77 736C3230 32342E6F 7267301F 0603551D
+  23041830 1680140E D9187A64 E3A99980 C7FE60B2 6C239A88 52A40530 1D060355
+  1D0E0416 04140ED9 187A64E3 A99980C7 FE60B26C 239A8852 A405300D 06092A86
+  4886F70D 01010405 00038181 000C4007 464B7E69 D44980E7 0A19F901 A0B2C859
+  53EE43CD 1B3D3AEA E6E143BC 294EA88A 9093247F 3009ADF2 984310E9 B33CAAB7
+  C8726C91 235EA43A 023B9096 3EFDC815 45AEF10B 95E6325E 6FA3DCBB 44F474C8
+  79AC4EC3 83563F1E AF1DA788 FCDE79B9 D125E0D4 19490693 3B93D9E8 04C11382
+  F0643EAC 35F4CF5D 840DBEF3 AA
+  quit
+!
+!
+!
+port-channel load-balance src-dst-mac
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+ip ssh time-out 20
+ip ssh version 2
+!
+!
+!
+interface Port-channel1
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,30,99,300
+ switchport mode trunk
+!
+interface FastEthernet1/0/1
+!
+interface FastEthernet1/0/2
+!
+interface FastEthernet1/0/3
+!
+interface FastEthernet1/0/4
+!
+interface FastEthernet1/0/5
+!
+interface FastEthernet1/0/6
+!
+interface FastEthernet1/0/7
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+!
+interface FastEthernet1/0/8
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,30,99
+ switchport mode trunk
+!
+interface FastEthernet1/0/9
+!
+interface FastEthernet1/0/10
+!
+interface FastEthernet1/0/11
+!
+interface FastEthernet1/0/12
+!
+interface FastEthernet1/0/13
+!
+interface FastEthernet1/0/14
+!
+interface FastEthernet1/0/15
+!
+interface FastEthernet1/0/16
+!
+interface FastEthernet1/0/17
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 30,100,300
+ switchport mode trunk
+!
+interface FastEthernet1/0/18
+!
+interface FastEthernet1/0/19
+!
+interface FastEthernet1/0/20
+!
+interface FastEthernet1/0/21
+!
+interface FastEthernet1/0/22
+!
+interface FastEthernet1/0/23
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,30,99,300
+ switchport mode trunk
+ channel-group 1 mode active
+!
+interface FastEthernet1/0/24
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 666
+ switchport trunk allowed vlan 10,20,30,99,300
+ switchport mode trunk
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/0/1
+!
+interface GigabitEthernet1/0/2
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan10
+ ip address 10.1.10.60 255.255.255.192
+ standby 10 ip 10.1.10.62
+ standby 10 priority 110
+ standby 10 preempt
+!
+interface Vlan20
+ ip address 10.1.21.252 255.255.254.0
+ ip helper-address 10.1.10.2
+ ip helper-address 10.1.20.1
+ standby 20 ip 10.1.21.254
+ standby 20 priority 110
+ standby 20 preempt
+!
+interface Vlan99
+ ip address 10.1.99.12 255.255.255.240
+ standby 99 ip 10.1.99.14
+ standby 99 priority 110
+ standby 99 preempt
+!
+interface Vlan100
+ ip address 10.1.254.246 255.255.255.252
+!
+router ospf 1
+ router-id 0.0.0.4
+ log-adjacency-changes
+ redistribute connected
+ redistribute static
+ network 10.1.254.244 0.0.0.3 area 1
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 10.1.254.245 130
+ip http server
+ip http secure-server
+!
+!
+ip sla enable reaction-alerts
+!
+snmp-server community 4P RW
+!
+banner motd ^CC/!\Restricted access. Only for authorized people/!\^C
+!
+line con 0
+line vty 0 4
+ exec-timeout 5 0
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+end
