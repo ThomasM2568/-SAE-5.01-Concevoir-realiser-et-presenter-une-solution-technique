@@ -1,0 +1,22 @@
+version: "v1.1"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /app:/var/www/html/
+    networks:
+      - internal
+  php:
+    image: php:8-fpm
+    volumes:
+      - /app:/var/www/html/
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge
